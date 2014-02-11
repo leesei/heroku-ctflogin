@@ -1,0 +1,93 @@
+#!/usr/bin/env casperjs
+
+/*global CasperError console require*/
+
+var REDIRECT_URL="https://www.ctfeshop.com.hk/user/pointlog.aspx";
+
+var casper = require("casper").create({
+	logLevel: "debug",
+	verbose: true,
+	pageSettings: {
+		loadImages: false,
+		//loadPlugins: false,
+		userAgent: 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/31.0.1650.57 Safari/537.36'
+	}
+});
+
+// casper.on('page.resource.requested', function(request) {
+// 	this.log("page request: "+JSON.stringify(request, null, 4), "debug");
+// });
+
+// casper.on('resource.requested', function(request) {
+// 	if (request.method != "POST")
+// 		return;
+
+// 	this.log("resource request (POST): "+JSON.stringify(request, null, 4), "debug");
+// });
+
+// casper.on('page.resource.received', function(response) {
+// 	this.log("page response: "+JSON.stringify(response, null, 4), "debug");
+// });
+
+if (casper.cli.args.length < 2) {
+    console.error('Usage: casperjs --ignore-ssl-errors=true ctf.casperjs <user> <password>');
+    casper.exit();
+}
+
+var user = casper.cli.args[0];
+var password = casper.cli.args[1];
+
+casper.start();
+
+/*
+// test local file
+casper.thenOpen("./pointlog.html").thenBypass(1);
+/*/
+casper
+	.thenOpen("https://www.ctfeshop.com.hk/user/signin.aspx?action=signout")
+	.thenOpen(
+		"https://www.ctfeshop.com.hk/user/signin.aspx" +
+		(REDIRECT_URL? "?refurl="+REDIRECT_URL: "")
+	);
+//*/
+
+casper.then(function submitForm() {
+	// this.debugHTML();
+	this.log("Waiting for form...", "info");
+	this.waitForSelector("input#imgBtnSubmit",
+		function () {
+			this.log("Form ready, fill it", "info");
+			var formValues = this.getFormValues('form#form1');
+			this.fill("form#form1", {
+					"uc_signin_1$txtUsername": "leesei@gmail.com",
+					"uc_signin_1$txtPwd": "sei5glee"
+				},
+				false
+			);
+			this.click("input#imgBtnSubmit");
+
+			if (REDIRECT_URL) {
+				this.log("Waiting for redirect...", "info");
+				this.waitForUrl(REDIRECT_URL);
+			}
+		});
+});
+
+casper.then(function pointLog() {
+	var list = this.evaluate(function () {
+		var results = [];
+		var listRows = document.querySelectorAll('table tr:not(:first-child)');
+		results = Array.prototype.map.call(listRows, function(eleRow) {
+			var cols = eleRow.children;
+			return { item: cols[0].innerText, date: cols[1].innerText.trim(), score: cols[2].innerText };
+		});
+		return results;
+	});
+	this.log("Latest login: ", "info");
+	this.log(JSON.stringify(list[0], null, 4));
+
+
+	this.exit(0);
+});
+
+casper.run();
