@@ -2,6 +2,9 @@
 
 Heroku app that logins Chau Tai Fook website for the user points, yay!
 
+The nuts and bolts are in `bin/` and the following conifg, feel free to integrate to any Heroku app without using this repo.
+> Hint: use [buildpack-multi](https://github.com/ddollar/heroku-buildpack-multi) for [buildpack-casperjs](https://github.com/leesei/heroku-buildpack-casperjs).
+
 ## Usage
 
 Deployment and config:
@@ -13,13 +16,9 @@ $ cd heroku-ctflogin
 
 $ heroku create --buildpack https://github.com/leesei/heroku-buildpack-casperjs
 
-$ heroku addons:add scheduler
-
 $ git push heroku master
 
-$ heroku app:config CTF_LOGIN <login name>
-
-$ heroku app:config CTF_PASSWORD <password>
+$ heroku config:set CTF_LOGIN=<login name> CTF_PASSWORD=<password>
 ```
 
 Test with:
@@ -28,11 +27,15 @@ Test with:
 $ heroku run bin/ctflogin.sh
 ```
 
-If everything is fine, add a Scheduler job for the above command:
+If everything is fine, add a daily Scheduler job for the above command:
 
 ```bash
+$ heroku addons:add scheduler
+
 $ heroku addons:open scheduler
 ```
+
+> login to [CTF](ctfeshop.com.hk/user/signin.aspx?refurl=https://www.ctfeshop.com.hk/user/pointlog.aspx) intermittently to see if `ctflogin` is doing the right job (hopefully so :-P)
 
 ## Reference
 
