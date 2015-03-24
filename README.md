@@ -1,5 +1,8 @@
 # Heroku app: ctflogin
 
+> WARNING: CTF changes their login layout on 2015-01-27
+> this code no longer works until further notice
+
 Heroku app that logins Chau Tai Fook website for the user points, yay!
 
 The nuts and bolts are in `bin/` and the following conifg, feel free to integrate to any Heroku app without using this repo.
@@ -35,7 +38,7 @@ $ heroku addons:add scheduler
 $ heroku addons:open scheduler
 ```
 
-> login to [CTF](ctfeshop.com.hk/user/signin.aspx?refurl=https://www.ctfeshop.com.hk/user/pointlog.aspx) intermittently to see if `ctflogin` is doing the right job (hopefully so :-P)
+> login to [CTF](http://ctfeshop.com.hk/user/signin.aspx?refurl=https://www.ctfeshop.com.hk/user/pointlog.aspx) intermittently to see if `ctflogin` is doing the right job (hopefully so :-P)
 
 ## Reference
 
