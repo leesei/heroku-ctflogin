@@ -1,6 +1,6 @@
 # Heroku app: ctflogin
 
-> WARNING: CTF changes their login layout on 2015-01-27
+> WARNING: CTF changes their login layout on 2015-01-27  
 > this code no longer works until further notice
 
 Heroku app that logins Chau Tai Fook website for the user points, yay!
